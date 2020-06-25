@@ -1,0 +1,67 @@
+import math
+
+
+# energy in function of mass and initial velocity
+def energy_func(ma, ve):
+    energy = 1/2 * ma * ve * ve
+    return energy
+
+
+# braking force acording to the normal force and coef of friction
+# https://en.wikipedia.org/wiki/Rolling_resistance
+def braking_force(normn, coef_fric):
+    force = coef_fric * normn
+    return force
+
+
+# normal force = m * g
+def norm_force(ma, g):
+    norm = ma * g
+    return norm
+
+
+# coef of Rolling resistance according to the diameter of the wheel and the deformation of the wheel
+# sink is the ammount of deformation
+# https://en.wikipedia.org/wiki/Rolling_resistance
+def coef_friction(sink, diam):
+    coef_fric = math.sqrt((sink / diam))
+    return coef_fric
+
+
+# braking distance = total energy / braking force
+def braking_distance(energy, force):
+    dist = energy / force
+    return dist
+
+
+def brake_force(br_ar, br_pr, wh_di, br_di, co_fr):
+    force_pad = co_fr * br_ar * br_pr
+    force_wheel = force_pad * br_di / wh_di
+    return force_wheel
+
+
+g1 = 9.81
+# https://en.wikipedia.org/wiki/Brake_lining#:~:text=The%20dynamic%20friction%20coefficient%20%22%CE%BC,force%20close%20to%20400%20Newtons.
+coef_friction_brakes = 0.35
+
+mass = int(input('mass: '))
+vel = int(input('velocity: '))
+sin = input('sink: ')
+if sin == '':
+    sin = 1
+else:
+    sin = int(sin)
+dia = int(input('wheel diameter: '))
+bra_dia = int(input('brake diameter: '))
+bra_pres = int(input('brake presure: '))
+bra_area = int(input("brake area: "))
+nor = norm_force(mass, g1)
+coef = coef_friction(sin, dia)
+bra_tires = braking_force(nor, coef)
+bra_brakes = brake_force(bra_area, bra_pres, dia, bra_dia, coef_friction_brakes)
+if bra_brakes > bra_tires:
+    bra = bra_tires
+else:
+    bra = bra_brakes
+ener = energy_func(mass, vel)
+print("The braking distance is: {0}".format(braking_distance(ener, bra)))
